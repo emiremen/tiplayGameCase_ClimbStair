@@ -10,6 +10,7 @@ public class UIScript : MonoBehaviour
     public bool isStarted = false;
 
     public TextMeshProUGUI totalMoneyTxt;
+    public TextMeshProUGUI currentGameLevel;
 
     public TextMeshPro scoreTxt;
     public float score;
@@ -41,8 +42,6 @@ public class UIScript : MonoBehaviour
     public TextMeshProUGUI incomeAmount;
     public TextMeshProUGUI speedAmount;
 
-    public float timeScale;
-
 
     void Start()
     {
@@ -50,13 +49,16 @@ public class UIScript : MonoBehaviour
         stepSpawner = GameObject.FindGameObjectWithTag("StepSpawner").GetComponent<StepSpawnerScript>();
         woodSpawner = GameObject.FindGameObjectWithTag("WoodSpawner").GetComponent<VerticalWoodSpawnerScript>();
 
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.SetFloat("totalMoney", 9999);
+        //PlayerPrefs.DeleteAll();
+        //PlayerPrefs.SetFloat("totalMoney", 9900);
 
         score = totalScore;
         character.scoreSign.transform.GetChild(0).GetComponent<TextMeshPro>().text = totalScore + "m";
         totalMoney = PlayerPrefs.GetFloat("totalMoney", 0);
         totalMoneyTxt.text = ((int)totalMoney).ToString();
+
+        currentGameLevel.text = "Level " + PlayerPrefs.GetInt("currentGameLevel", 1);
+
         isStarted = false;
         gameOverPanel.SetActive(false);
         shopPanel.SetActive(true);
@@ -77,9 +79,6 @@ public class UIScript : MonoBehaviour
 
     void Update()
     {
-        timeScale = Time.timeScale;
-
-
         float currentLvlProgress = ((totalScore / (totalScore - score)) * 100);
         currentLvlProgress = (1 / currentLvlProgress) * 100;
         progressBar.fillAmount = currentLvlProgress;
@@ -95,13 +94,24 @@ public class UIScript : MonoBehaviour
         {
             isStarted = false;
             score = 0;
-            gameOverPanel.SetActive(true);
             comfettiParticle.Play();
+            gameOver();
         }
         scoreTxt.text = string.Format("{0:0.0}", score) + "m";
     }
 
     public void gameOver()
+    {
+        savePlayerPrefs();
+        gameOverPanel.SetActive(true);
+    }
+    public void tryAgain()
+    {
+        savePlayerPrefs();
+        tryAgainPanel.SetActive(true);
+    }
+
+    void savePlayerPrefs()
     {
         PlayerPrefs.SetFloat("totalMoney", totalMoney);
         if (score > PlayerPrefs.GetFloat("lastScore", 0))
@@ -110,8 +120,7 @@ public class UIScript : MonoBehaviour
             PlayerPrefs.SetFloat("lastScorePosition", woodSpawner.lastSpawnedWood.transform.position.y);
         }
 
-
-        tryAgainPanel.SetActive(true);
+        PlayerPrefs.SetInt("currentGameLevel", PlayerPrefs.GetInt("currentGameLevel", 1) + 1);
     }
 
     public void startGame()
@@ -135,36 +144,44 @@ public class UIScript : MonoBehaviour
 
     public void increaseStamina()
     {
-        if (totalMoney >= PlayerPrefs.GetInt("staminaAmount"))
+        if (totalMoney >= PlayerPrefs.GetInt("staminaAmount", 50))
         {
             PlayerPrefs.SetInt("staminaLevel", PlayerPrefs.GetInt("staminaLevel", 1) + 1);
-            PlayerPrefs.SetInt("staminaAmount", PlayerPrefs.GetInt("staminaAmount", 50) + 50);
             staminaLevel.text = "LVL " + PlayerPrefs.GetInt("staminaLevel", 1).ToString();
-            staminaAmount.text = PlayerPrefs.GetInt("staminaAmount", 100).ToString();
             character.totalStamina += (PlayerPrefs.GetInt("staminaLevel", 1) * 5);
             character.stamina += (PlayerPrefs.GetInt("staminaLevel", 1) * 5);
+            PlayerPrefs.SetFloat("totalMoney", (int)PlayerPrefs.GetFloat("totalMoney") - PlayerPrefs.GetInt("staminaAmount", 50));
+            totalMoney = PlayerPrefs.GetFloat("totalMoney", 0);
+            totalMoneyTxt.text = ((int)totalMoney).ToString();
+            PlayerPrefs.SetInt("staminaAmount", PlayerPrefs.GetInt("staminaAmount", 50) + 50);
+            staminaAmount.text = PlayerPrefs.GetInt("staminaAmount", 50).ToString();
         }
     }
     public void increaseIncome()
     {
-        if (totalMoney >= PlayerPrefs.GetInt("incomeAmount"))
+        if (totalMoney >= PlayerPrefs.GetInt("incomeAmount", 50))
         {
             PlayerPrefs.SetInt("incomeLevel", PlayerPrefs.GetInt("incomeLevel", 1) + 1);
-            PlayerPrefs.SetInt("incomeAmount", PlayerPrefs.GetInt("incomeAmount", 50) + 50);
             incomeLevel.text = "LVL " + PlayerPrefs.GetInt("incomeLevel", 1).ToString();
+            PlayerPrefs.SetFloat("totalMoney", (int)PlayerPrefs.GetFloat("totalMoney") - PlayerPrefs.GetInt("incomeAmount", 50));
+            totalMoney = PlayerPrefs.GetFloat("totalMoney", 0);
+            totalMoneyTxt.text = ((int)totalMoney).ToString();
+            PlayerPrefs.SetInt("incomeAmount", PlayerPrefs.GetInt("incomeAmount", 50) + 50);
             incomeAmount.text = PlayerPrefs.GetInt("incomeAmount", 50).ToString();
         }
     }
     public void increaseSpeed()
     {
-        if (totalMoney >= PlayerPrefs.GetInt("speedAmount"))
+        if (totalMoney >= PlayerPrefs.GetInt("speedAmount", 50))
         {
-            PlayerPrefs.SetInt("speedLevel", PlayerPrefs.GetInt("speedLevel") + 1);
-            PlayerPrefs.SetInt("speedAmount", PlayerPrefs.GetInt("speedAmount", 50) + 50);
+            PlayerPrefs.SetInt("speedLevel", PlayerPrefs.GetInt("speedLevel", 1) + 1);
             speedLevel.text = "LVL " + PlayerPrefs.GetInt("speedLevel", 1).ToString();
-            speedAmount.text = PlayerPrefs.GetInt("speedAmount", 50).ToString();
             Time.timeScale = (PlayerPrefs.GetInt("speedLevel") * .2f) + 1;
-
+            PlayerPrefs.SetFloat("totalMoney", (int)PlayerPrefs.GetFloat("totalMoney") - PlayerPrefs.GetInt("speedAmount", 50));
+            totalMoney = PlayerPrefs.GetFloat("totalMoney", 0);
+            totalMoneyTxt.text = ((int)totalMoney).ToString();
+            PlayerPrefs.SetInt("speedAmount", PlayerPrefs.GetInt("speedAmount", 50) + 50);
+            speedAmount.text = PlayerPrefs.GetInt("speedAmount", 50).ToString();
         }
     }
 }

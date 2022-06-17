@@ -20,7 +20,7 @@ public class StepSpawnerScript : MonoBehaviour
     float currentHeight = 0, currentRotation = 0;
 
     public float moveSpeed;
-   public bool isSpawned;
+    public bool isSpawned;
     public Vector3 newPosForSpawn;
 
 
@@ -34,23 +34,23 @@ public class StepSpawnerScript : MonoBehaviour
 
     private void Update()
     {
-        if (spawnedObj2!=null)
+        if (spawnedObj2 != null)
         {
-                character.transform.position = Vector3.Lerp(
-                        character.transform.position,
-                        spawnedObj2.transform.GetChild(0).GetChild(0).position+new Vector3(0,0,0),
-                        Time.deltaTime * moveSpeed);
+            character.transform.position = Vector3.Lerp(
+                    character.transform.position,
+                    spawnedObj2.transform.GetChild(0).GetChild(0).position + new Vector3(0, 0, 0),
+                    Time.deltaTime * moveSpeed);
         }
 
     }
 
     public void spawnStep()
     {
-        if(spawnedObj2 != null)
+        if (spawnedObj2 != null)
             spawnedObj2 = spawnedObj;
 
         spawnedObj = Instantiate(stepObject, new Vector3(0, currentHeight, 0), Quaternion.Euler(0, currentRotation, 0));
-        
+
 
         spawnedObj.transform.parent = transform;
         currentHeight += stepHeight;
@@ -62,16 +62,19 @@ public class StepSpawnerScript : MonoBehaviour
     }
     void step2()
     {
-        spawnedObj2 = spawnedObj;
-        isSpawned = true;
-        spawnedObj = Instantiate(stepObject, new Vector3(0, currentHeight, 0), Quaternion.Euler(0, currentRotation, 0));
-        spawnedObj.transform.parent = transform;
-        currentHeight += stepHeight;
-        currentRotation += stepRotation;
-        uIScript.decreaseScore();
-        gainMoney(spawnedObj.transform.position.y);
+        if (uIScript.isStarted)
+        {
+            spawnedObj2 = spawnedObj;
+            isSpawned = true;
+            spawnedObj = Instantiate(stepObject, new Vector3(0, currentHeight, 0), Quaternion.Euler(0, currentRotation, 0));
+            spawnedObj.transform.parent = transform;
+            currentHeight += stepHeight;
+            currentRotation += stepRotation;
+            uIScript.decreaseScore();
+            gainMoney(spawnedObj.transform.position.y);
 
-        character.sweatingCharacter();
+            character.sweatingCharacter();
+        }
     }
 
     public void gainMoney(float yPos)

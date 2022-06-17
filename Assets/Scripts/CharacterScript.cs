@@ -21,7 +21,8 @@ public class CharacterScript : MonoBehaviour
     public float totalStamina;
     public ParticleSystem sweatingParticle;
 
-    public float tilingNum = 0.3f;
+    public Animation anim;
+    public AnimationClip breathingClip;
 
     void Start()
     {
@@ -41,6 +42,7 @@ public class CharacterScript : MonoBehaviour
         //transform.LookAt(new Vector3(stepSpawner.spawnedObj.transform.GetChild(0).GetChild(0).transform.position.x,
         //        transform.position.y, stepSpawner.spawnedObj.transform.GetChild(0).GetChild(0).transform.position.z));
         //transform.position = Vector3.Lerp(transform.position, stepSpawner.spawnedObj.transform.position, 0.001f);
+
         transform.rotation = Quaternion.LookRotation(stepSpawner.spawnedObj ? -stepSpawner.spawnedObj.transform.GetChild(0).GetChild(0).right : Vector3.right);
 
         if (Input.GetKey(KeyCode.Mouse0) && uIScript.isStarted)
@@ -65,14 +67,16 @@ public class CharacterScript : MonoBehaviour
             if (stamina <= totalStamina)
             {
                 stamina += Time.deltaTime * 5;
-                if (stamina >= (totalStamina * 40) / 100)
+
+                if (transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y >= 0.2f && stamina >= (totalStamina * 30) / 100)
                 {
-                    sweatingParticle.Stop();
-                    if (transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y >= 0.2f && stamina >= (totalStamina * 30) / 100)
+                    anim.Stop();
+                    var tilingY = transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y;
+                    tilingY -= 0.0005f;
+                    transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale = new Vector2(-2, tilingY);
+                    if (stamina >= (totalStamina * 40) / 100)
                     {
-                        var tilingY = transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y;
-                        tilingY -= 0.0005f;
-                        transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale = new Vector2(-2, tilingY);
+                        sweatingParticle.Stop();
                     }
                 }
             }
@@ -80,9 +84,8 @@ public class CharacterScript : MonoBehaviour
         }
         if (stamina <= 0)
         {
-            uIScript.gameOver();
+            uIScript.tryAgain();
 
-            //Destroy(this.gameObject);
             this.gameObject.SetActive(false);
             GameObject[] woods = GameObject.FindGameObjectsWithTag("Step");
             foreach (GameObject wood in woods)
@@ -117,6 +120,7 @@ public class CharacterScript : MonoBehaviour
             sweatingParticle.Play();
             if (transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y <= 0.29f && stamina < (totalStamina * 30) / 100)
             {
+                anim.Play();
                 StartCoroutine(changeColorToRed());
             }
         }
@@ -124,7 +128,7 @@ public class CharacterScript : MonoBehaviour
 
     IEnumerator changeColorToRed()
     {
-        while(transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y <= 0.29f)
+        while (transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y <= 0.29f)
         {
             yield return new WaitForSeconds(0.08f);
             var tilingY = transform.GetChild(1).GetComponent<Renderer>().material.mainTextureScale.y;
