@@ -6,6 +6,7 @@ using TMPro;
 public class VerticalWoodSpawnerScript : MonoBehaviour
 {
     private StepSpawnerScript stepSpawner;
+    private SoundManagerScript soundManagerScript;
 
     public GameObject woodObject;
 
@@ -20,6 +21,7 @@ public class VerticalWoodSpawnerScript : MonoBehaviour
     void Start()
     {
         stepSpawner = GameObject.FindGameObjectWithTag("StepSpawner").GetComponent<StepSpawnerScript>();
+        soundManagerScript = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManagerScript>();
 
         if (PlayerPrefs.GetFloat("lastScorePosition") > 0.3)
         {
@@ -40,6 +42,7 @@ public class VerticalWoodSpawnerScript : MonoBehaviour
 
     public void spawnWood()
     {
+        soundManagerScript.audioSource.PlayOneShot(soundManagerScript.audios[0]);
         lastSpawnedWood = Instantiate(woodObject, stepSpawner.spawnedObj.transform.position, Quaternion.identity);
     }
 
