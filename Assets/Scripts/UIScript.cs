@@ -135,21 +135,15 @@ public class UIScript : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    //public void gainMoney(float yPos)
-    //{
-    //    totalMoney += 0.5f;
-    //    totalMoneyTxt.text = string.Format("{0:0}", totalMoney);
-    //    Destroy(Instantiate(gainMoneyTextObj, new Vector3(stepSpawner.spawnedObj.transform.position.x, yPos + .13f, gainMoneyTextObj.transform.position.z), gainMoneyTextObj.transform.rotation), 1);
-    //}
-
     public void increaseStamina()
     {
         if (totalMoney >= PlayerPrefs.GetInt("staminaAmount", 50))
         {
             PlayerPrefs.SetInt("staminaLevel", PlayerPrefs.GetInt("staminaLevel", 1) + 1);
             staminaLevel.text = "LVL " + PlayerPrefs.GetInt("staminaLevel", 1).ToString();
-            character.totalStamina += (PlayerPrefs.GetInt("staminaLevel", 1) * 5);
-            character.stamina += (PlayerPrefs.GetInt("staminaLevel", 1) * 5);
+            PlayerPrefs.SetInt("totalStamina", PlayerPrefs.GetInt("totalStamina", 100) + PlayerPrefs.GetInt("staminaLevel", 1) * 5);
+            character.totalStamina = PlayerPrefs.GetInt("totalStamina", 100);
+            character.stamina = character.totalStamina;
             PlayerPrefs.SetFloat("totalMoney", (int)PlayerPrefs.GetFloat("totalMoney") - PlayerPrefs.GetInt("staminaAmount", 50));
             totalMoney = PlayerPrefs.GetFloat("totalMoney", 0);
             totalMoneyTxt.text = ((int)totalMoney).ToString();

@@ -30,7 +30,7 @@ public class CharacterScript : MonoBehaviour
         stepSpawner = GameObject.FindGameObjectWithTag("StepSpawner").GetComponent<StepSpawnerScript>();
         woodSpawner = GameObject.FindGameObjectWithTag("WoodSpawner").GetComponent<VerticalWoodSpawnerScript>();
         uIScript = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIScript>();
-        totalStamina += (PlayerPrefs.GetInt("staminaLevel", 1) * 5);
+        totalStamina = PlayerPrefs.GetInt("totalStamina", 100);
         stamina = totalStamina;
 
         Time.timeScale = 1;
