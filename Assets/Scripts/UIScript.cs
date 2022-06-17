@@ -105,22 +105,26 @@ public class UIScript : MonoBehaviour
         savePlayerPrefs();
         gameOverPanel.SetActive(true);
     }
-    public void tryAgain()
+    public IEnumerator tryAgain()
     {
         savePlayerPrefs();
+        yield return new WaitForSeconds(1.5f);
         tryAgainPanel.SetActive(true);
     }
 
     void savePlayerPrefs()
     {
-        PlayerPrefs.SetFloat("totalMoney", totalMoney);
-        if (score > PlayerPrefs.GetFloat("lastScore", 0))
+        if (isStarted)
         {
-            PlayerPrefs.SetFloat("lastScore", score);
-            PlayerPrefs.SetFloat("lastScorePosition", woodSpawner.lastSpawnedWood.transform.position.y);
-        }
+            PlayerPrefs.SetFloat("totalMoney", totalMoney);
+            if (score > PlayerPrefs.GetFloat("lastScore", 0))
+            {
+                PlayerPrefs.SetFloat("lastScore", score);
+                PlayerPrefs.SetFloat("lastScorePosition", woodSpawner.lastSpawnedWood.transform.position.y);
+            }
 
-        PlayerPrefs.SetInt("currentGameLevel", PlayerPrefs.GetInt("currentGameLevel", 1) + 1);
+            PlayerPrefs.SetInt("currentGameLevel", PlayerPrefs.GetInt("currentGameLevel", 1) + 1);
+        }
     }
 
     public void startGame()

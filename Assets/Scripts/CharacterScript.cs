@@ -20,6 +20,7 @@ public class CharacterScript : MonoBehaviour
     public float stamina;
     public float totalStamina;
     public ParticleSystem sweatingParticle;
+    public ParticleSystem deathParticle;
 
     public Animation anim;
     public AnimationClip breathingClip;
@@ -84,19 +85,34 @@ public class CharacterScript : MonoBehaviour
         }
         if (stamina <= 0)
         {
-            uIScript.tryAgain();
+            uIScript.isStarted = false;
+            StartCoroutine(uIScript.tryAgain());
 
-            this.gameObject.SetActive(false);
-            GameObject[] woods = GameObject.FindGameObjectsWithTag("Step");
-            foreach (GameObject wood in woods)
-            {
-                wood.AddComponent<Rigidbody>();
-                wood.GetComponent<Rigidbody>().AddForce(Vector3.up * 3, ForceMode.Impulse);
-            }
+            deathParticle.transform.position = transform.position;
+            sweatingParticle.Stop();
+            deathParticle.Play();
+
+            Camera.main.GetComponent<CameraScript>().target = woodSpawner.lastSpawnedWood.transform;
+            gameObject.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().enabled = false;
+            Invoke("fallDownWoods", .7f);
+
         }
         if (stepSpawner.spawnedObj)
         {
             scoreSign.transform.position = Vector3.MoveTowards(scoreSign.transform.position, new Vector3(0, woodSpawner.lastSpawnedWood.transform.position.y + 0.23f, 0), Time.deltaTime * .5f);
+        }
+    }
+
+    public void fallDownWoods()
+    {
+        GameObject[] woods = GameObject.FindGameObjectsWithTag("Step");
+        foreach (GameObject wood in woods)
+        {
+            if (wood.GetComponent<Rigidbody>() == null)
+            {
+                wood.AddComponent<Rigidbody>();
+                wood.GetComponent<Rigidbody>().AddForce(Vector3.up * 2.2f, ForceMode.Impulse);
+            }
         }
     }
 
