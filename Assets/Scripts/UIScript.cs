@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UIScript : MonoBehaviour
 {
     public bool isStarted = false;
+    public bool isTouched = false;
 
     public TextMeshProUGUI totalMoneyTxt;
     public TextMeshProUGUI currentGameLevel;
@@ -26,6 +27,7 @@ public class UIScript : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject shopPanel;
     public GameObject tapToStartPanel;
+    public GameObject touchPanel;
 
     public Image progressBar;
 
@@ -63,6 +65,7 @@ public class UIScript : MonoBehaviour
         gameOverPanel.SetActive(false);
         shopPanel.SetActive(true);
         tapToStartPanel.SetActive(true);
+        touchPanel.SetActive(false);
 
         //### SHOP Levels
         staminaLevel.text = "LVL " + PlayerPrefs.GetInt("staminaLevel", 1).ToString();
@@ -108,6 +111,7 @@ public class UIScript : MonoBehaviour
     public IEnumerator tryAgain()
     {
         savePlayerPrefs();
+        isStarted = false;
         yield return new WaitForSeconds(1.5f);
         tryAgainPanel.SetActive(true);
     }
@@ -116,7 +120,7 @@ public class UIScript : MonoBehaviour
     {
         if (isStarted)
         {
-            PlayerPrefs.SetFloat("totalMoney", totalMoney);
+            PlayerPrefs.SetFloat("totalMoney", (int)totalMoney);
             if (score > PlayerPrefs.GetFloat("lastScore", 0))
             {
                 PlayerPrefs.SetFloat("lastScore", score);
@@ -131,12 +135,22 @@ public class UIScript : MonoBehaviour
     {
         shopPanel.SetActive(false);
         tapToStartPanel.SetActive(false);
+        touchPanel.SetActive(true);
         isStarted = true;
     }
 
     public void restartGame()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void touchScreen()
+    {
+        isTouched = true;
+    }
+    public void unTouchScreen()
+    {
+        isTouched = false;
     }
 
     public void increaseStamina()

@@ -45,8 +45,8 @@ public class CharacterScript : MonoBehaviour
         //transform.position = Vector3.Lerp(transform.position, stepSpawner.spawnedObj.transform.position, 0.001f);
 
         transform.rotation = Quaternion.LookRotation(stepSpawner.spawnedObj ? -stepSpawner.spawnedObj.transform.GetChild(0).GetChild(0).right : Vector3.right);
-
-        if (Input.GetKey(KeyCode.Mouse0) && uIScript.isStarted)
+        
+        if ((Input.GetKey(KeyCode.Mouse0) || uIScript.isTouched )&& uIScript.isStarted)
         {
             run();
 
@@ -85,7 +85,6 @@ public class CharacterScript : MonoBehaviour
         }
         if (stamina <= 0)
         {
-            uIScript.isStarted = false;
             StartCoroutine(uIScript.tryAgain());
 
             deathParticle.transform.position = transform.position;

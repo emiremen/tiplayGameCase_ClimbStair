@@ -1,13 +1,26 @@
 {
-    "m_SelectedDeviceId": "",
+    "m_SelectedDeviceId": "FFY5T18423049406",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "FFY5T18423049406",
+        "name": "com.DefaultCompany.Muhammed_EMEN_ClimbStairGame",
+        "processId": 25789,
         "exited": false
     },
     "m_SelectedPriority": 0,
-    "m_KnownPackagesForSerialization": [],
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "FFY5T18423049406",
+            "name": "com.DefaultCompany.Muhammed_EMEN_ClimbStairGame",
+            "processId": 24502,
+            "exited": false
+        },
+        {
+            "deviceId": "FFY5T18423049406",
+            "name": "com.DefaultCompany.Muhammed_EMEN_ClimbStairGame",
+            "processId": 25789,
+            "exited": false
+        }
+    ],
     "m_Tags": {
         "m_Entries": [
             {
@@ -41,9 +54,20 @@
         ]
     },
     "m_MemoryViewerState": {
-        "MemoryWindowHeight": 0.0,
-        "MemoryWindowWidth": 0.0,
-        "MemoryTypeEnabled": [],
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
         "MemoryGroup": 2,
         "Behavior": 0
     },
